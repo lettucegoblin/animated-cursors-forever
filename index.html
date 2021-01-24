@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Animated Cursor Demo Page</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            html{
+                background-image: linear-gradient( 109.6deg,  rgba(121,203,202,1) 11.2%, rgba(119,161,211,1) 91.1% );
+            }
+            body > div{
+                width: 20%;
+                display:flex;
+                flex-direction: column;
+                background: aliceblue;
+                border-radius: 15px;
+                padding: 25px;
+                margin: 30px;
+                border: solid;
+            }
+            label{
+                font-weight: bold;
+                cursor: inherit;
+            }
+            #cursorList, #cursorfileinput{
+                padding: 8px;
+                margin: 10px;
+                cursor: inherit; /* use this to override anything not using the cursor */
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <label>This accepts only .ani files since browsers already support .cur</label>
+            <input type='file' accept='image' capture='camera' id='cursorfileinput'>
+            <label for="cursorList">Choose a predefined cursor:</label>
+
+            <select id="cursorList">
+                <option value="hert.ani">Pink Heart</option>
+                <option value="hol132.ani">Flying Heart</option>
+                <option value="nat21.ani">Hamtaro</option>
+            </select>
+            <div>
+                Cursor choice is persistent on refresh because of optional aniLoadFromStorage function.
+                All cursors are stored a "Cookie" and can be seen with localStorage['myCursor']
+            </div>
+        </div>
+
+        <script src='aniImport.js'></script> <!-- required file -->
+        <script src='animcursors.js'></script> <!-- required file -->
+        <script>
+            var cursorfileinput = document.getElementById('cursorfileinput');
+            var cursorList = document.getElementById('cursorList')
+
+            // ---- animated cursor stuff ----
+            cursorList.onchange = function(){
+                var filename = cursorList.value;
+                aniFileImport(filename, function(aniCursor){
+                    animcur = makeanimcursor(aniCursor.BlobUrlArray, window.document.documentElement, aniCursor.cssDuration)
+                })
+            }
+            
+            
+            var animcur = undefined
+            cursorfileinput.addEventListener('change', function(e) {
+                if(this.files[0]){
+                    aniFileImport(this.files[0], function(aniCursor){
+                        animcur = makeanimcursor(aniCursor.BlobUrlArray, window.document.documentElement, aniCursor.cssDuration)
+                    })
+                }
+            }, false);
+            
+            aniLoadFromStorage(function(aniCursor){
+                animcur = makeanimcursor(aniCursor.BlobUrlArray, window.document.documentElement, aniCursor.cssDuration)
+            })
+
+            // ---- end animated cursor stuff ----
+        </script>
+    </body>
+</html>
