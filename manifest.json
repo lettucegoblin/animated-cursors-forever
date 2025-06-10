@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "Animated Cursors Forever",
+  "version": "1.0",
+  "description": "Animated cursor support for modern browsers",
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["animcursors.js", "aniImport.js", "content.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["*.ani", "animcursors.js", "aniImport.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "action": {
+    "default_popup": "index.html"
+  }
+}

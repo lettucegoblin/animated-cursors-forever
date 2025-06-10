@@ -44,7 +44,7 @@
             </select>
             <div>
                 Cursor choice is persistent on refresh because of optional aniLoadFromStorage function.
-                All cursors are stored a "Cookie" and can be seen with localStorage['myCursor']
+                All cursors are stored using chrome.storage and can be seen with chrome.storage.local.get('myCursor')
             </div>
         </div>
 

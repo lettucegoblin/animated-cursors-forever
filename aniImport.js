@@ -87,26 +87,17 @@ HTMLCanvasElement.prototype.renderImage = function(blob, xOffset) {
 
 
 function clearState(){
-    
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    localStorage.clear();
+    chrome.storage.local.clear();
     document.getElementById('pics').innerHTML = ''
 }
 
-function getfile(fileUrl, callback){
-    var req = new XMLHttpRequest();
-    req.open("GET", fileUrl, true);
-    req.responseType = "arraybuffer";
-
-    req.onload = function() {
-        var arrayBuffer = this.response;
-        
-        byteArr = new Uint8Array(arrayBuffer);
-
-        renderOutputBetter(callback)
-    };
-
-    req.send();
+async function getfile(fileUrl, callback){
+    const response = await fetch(fileUrl);
+    const arrayBuffer = await response.arrayBuffer();
+    byteArr = new Uint8Array(arrayBuffer);
+    renderOutputBetter(callback);
 }
 
 function toBits(fileObject, callback){
@@ -307,7 +298,7 @@ function renderOutputBetter(callback){
         cursorBlobArray.push(cursorBlobArray[0])
     if(cursorBlobArray.length > 0){
         let base64Cursor = btoa(String.fromCharCode.apply(null, byteArr));
-        localStorage.setItem('myCursor', base64Cursor)
+        chrome.storage.local.set({ myCursor: base64Cursor })
         //setSequence
 
         if(cursorOutput.seq){
@@ -382,9 +373,11 @@ window.aniFileImport = function(urlOrFile, callback){
 }
 
 window.aniLoadFromStorage = function(callback){
-    if(localStorage.hasOwnProperty('myCursor')) {
-        aniLoadFromBlobo(localStorage.getItem('myCursor'),callback)
-    }
+    chrome.storage.local.get(['myCursor'], function(result){
+        if(result.myCursor){
+            aniLoadFromBlobo(result.myCursor, callback)
+        }
+    });
 }
 
 window.aniLoadFromBlobo = function(blobo, callback){
@@ -396,13 +389,15 @@ window.aniLoadFromBlobo = function(blobo, callback){
 }
 
 /*
-if(localStorage.hasOwnProperty('myCursor')) {
-    byteArr = new Uint8Array(atob(localStorage.getItem('myCursor')).split("").map(
-        (char)=>char.charCodeAt(0)
-        )
-    );
-    renderOutputBetter()
-}
+// Example of manual load using chrome.storage
+// chrome.storage.local.get(['myCursor'], function(res){
+//     if(res.myCursor){
+//         byteArr = new Uint8Array(atob(res.myCursor).split("").map(
+//             (char)=>char.charCodeAt(0)
+//         ));
+//         renderOutputBetter();
+//     }
+// });
 */
 
 })();

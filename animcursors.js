@@ -41,7 +41,9 @@
                 iterations: this.iterations
             });
 
-           document.head.insertAdjacentHTML('beforeend','<style>html{transform: transale3d(0,0,0); }</style>')
+           const style = document.createElement('style');
+           style.textContent = 'html{transform: translate3d(0,0,0);}';
+           document.head.appendChild(style);
         }
 
         disable(){
